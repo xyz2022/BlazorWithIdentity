@@ -1,0 +1,46 @@
+﻿@page "/inbox"
+@attribute [Authorize]
+@using BlazorWithIdentity.Shared
+@inject HttpClient Http
+
+<h1>Inbox</h1>
+
+<p>This component demonstrates viewing an email inbox.</p>
+
+@if (emails == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Sender</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var email in emails)
+            {
+                <tr>
+                    <td>@email.Date.ToShortDateString()</td>
+                    <td>@email.Subject</td>
+                    <td>@email.Sender</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    InboxEmail[] emails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        emails = await Http.GetFromJsonAsync<InboxEmail[]>("api/Email/InboxEmails");
+    }
+
+
+}
